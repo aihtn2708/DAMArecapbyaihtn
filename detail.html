@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DAMA Deep Dive</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; color: #333; margin: 0; padding: 40px; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        /* Header */
+        header { border-bottom: 2px solid #ecf0f1; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; color: #2c3e50; font-size: 2.5rem; }
+        .tag { background: #3498db; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; }
+        .back-link { text-decoration: none; color: #7f8c8d; font-weight: bold; }
+        .back-link:hover { color: #3498db; }
+
+        /* Content Grid */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .section { margin-bottom: 20px; }
+        .section h3 { color: #3498db; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        ul { padding-left: 20px; line-height: 1.6; color: #555; }
+        
+        .full-width { grid-column: span 2; }
+        
+        /* Special Boxes */
+        .definition-box { background: #f9f9f9; padding: 20px; border-radius: 8px; font-style: italic; font-size: 1.1rem; border-left: 5px solid #2c3e50; margin-bottom: 30px; }
+        .pitfall-box { background: #fff5f5; border: 1px solid #feb2b2; color: #c0392b; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .tip-box { background: #e8f4fd; border: 1px solid #3498db; color: #2980b9; padding: 20px; border-radius: 8px; margin-top: 20px; }
+
+        @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } body { padding: 15px; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div>
+                <a href="index.html" class="back-link">← Back to Wheel</a>
+                <h1 id="page-title">Loading...</h1>
+            </div>
+            <span class="tag" id="page-tag">...</span>
+        </header>
+
+        <div class="definition-box" id="page-def"></div>
+
+        <div class="grid">
+            <div class="section">
+                <h3>🎯 Goals</h3>
+                <ul id="list-goals"></ul>
+            </div>
+            <div class="section">
+                <h3>🛠️ Activities</h3>
+                <ul id="list-activities"></ul>
+            </div>
+            <div class="section">
+                <h3>📥 Inputs</h3>
+                <ul id="list-inputs"></ul>
+            </div>
+            <div class="section">
+                <h3>📤 Outputs</h3>
+                <ul id="list-outputs"></ul>
+            </div>
+            
+            <div class="section full-width">
+                <h3>💡 CDMP Study Tip</h3>
+                <div class="tip-box" id="page-tip"></div>
+            </div>
+
+            <div class="section full-width">
+                <h3>⚠️ Common Exam Pitfall</h3>
+                <div class="pitfall-box" id="page-pitfall"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dama_content.js"></script>
+
+    <script>
+        // 1. Get the ID from the URL (e.g. ?id=2)
+        const params = new URLSearchParams(window.location.search);
+        const id = parseInt(params.get('id'));
+
+        // 2. Find the data
+        const data = damaData.find(d => d.id === id);
+
+        if (data) {
+            // 3. Inject Content
+            document.title = data.title + " - DAMA Deep Dive";
+            document.getElementById('page-title').innerText = data.title;
+            document.getElementById('page-tag').innerText = data.tag;
+            document.getElementById('page-def').innerText = data.definition;
+            document.getElementById('page-tip').innerText = data.tip;
+            document.getElementById('page-pitfall').innerText = data.exam_pitfall;
+
+            // Helper to fill lists
+            const fillList = (elementId, array) => {
+                document.getElementById(elementId).innerHTML = array.map(item => `<li>${item}</li>`).join('');
+            };
+
+            fillList('list-goals', data.goals);
+            fillList('list-activities', data.activities);
+            fillList('list-inputs', data.inputs);
+            fillList('list-outputs', data.outputs);
+        } else {
+            document.body.innerHTML = "<h1>Error: Topic not found. <a href='index.html'>Go Back</a></h1>";
+        }
+    </script>
+
+</body>
+</html>
